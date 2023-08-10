@@ -9,20 +9,14 @@ from planetarium.models import (
     AstronomyShow,
     ShowSession,
     Reservation,
-    Ticket
+    Ticket,
 )
 
 
 class PlanetariumDomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanetariumDome
-        fields = [
-            "id",
-            "name",
-            "rows",
-            "seats_in_row",
-            "capacity"
-        ]
+        fields = ["id", "name", "rows", "seats_in_row", "capacity"]
 
 
 class ShowThemeSerializer(serializers.ModelSerializer):
@@ -44,12 +38,7 @@ class AstronomyShowListSerializer(AstronomyShowSerializer):
 
     class Meta:
         model = AstronomyShow
-        fields = [
-            "id",
-            "title",
-            "description",
-            "show_themes"
-        ]
+        fields = ["id", "title", "description", "show_themes"]
 
 
 class AstronomyShowDetailSerializer(AstronomyShowSerializer):
@@ -57,23 +46,13 @@ class AstronomyShowDetailSerializer(AstronomyShowSerializer):
 
     class Meta:
         model = AstronomyShow
-        fields = [
-            "id",
-            "title",
-            "description",
-            "show_theme"
-        ]
+        fields = ["id", "title", "description", "show_theme"]
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShowSession
-        fields = [
-            "id",
-            "astronomy_show",
-            "planetarium_dome",
-            "show_time"
-        ]
+        fields = ["id", "astronomy_show", "planetarium_dome", "show_time"]
 
 
 class ShowSessionListSerializer(serializers.ModelSerializer):
@@ -96,7 +75,7 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
             "astronomy_show_title",
             "planetarium_dome_name",
             "planetarium_dome_capacity",
-            "tickets_available"
+            "tickets_available",
         ]
 
 
@@ -107,18 +86,13 @@ class TicketSerializer(serializers.ModelSerializer):
             attrs["row"],
             attrs["seat"],
             attrs["movie_session"].cinema_hall,
-            ValidationError
+            ValidationError,
         )
         return data
 
     class Meta:
         model = Ticket
-        fields = [
-            "id",
-            "row",
-            "seat",
-            "show_session"
-        ]
+        fields = ["id", "row", "seat", "show_session"]
 
 
 class TicketListSerializer(TicketSerializer):
@@ -134,9 +108,7 @@ class TicketSeatsSerializer(TicketSerializer):
 class ShowSessionDetailSerializer(serializers.ModelSerializer):
     astronomy_show = AstronomyShowListSerializer(many=False, read_only=True)
     planetarium_dome = PlanetariumDomeSerializer(many=False, read_only=True)
-    taken_places = TicketSeatsSerializer(
-        source="tickets", many=True, read_only=True
-    )
+    taken_places = TicketSeatsSerializer(source="tickets", many=True, read_only=True)
 
 
 class ReservationSerializer(serializers.ModelSerializer):

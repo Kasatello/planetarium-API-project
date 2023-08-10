@@ -4,7 +4,8 @@ from planetarium.views import (
     ShowThemeViewSet,
     AstronomyShowViewSet,
     ShowSessionViewSet,
-    ReservationViewSet)
+    ReservationViewSet,
+)
 from rest_framework import routers
 
 

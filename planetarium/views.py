@@ -20,9 +20,8 @@ from planetarium.serializers import (
     AstronomyShowListSerializer,
     AstronomyShowDetailSerializer,
     ShowSessionDetailSerializer,
-    ReservationListSerializer
+    ReservationListSerializer,
 )
-
 
 
 class PlanetariumDomeViewSet(viewsets.ModelViewSet):
@@ -76,8 +75,8 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         .select_related("astronomy_show", "planetarium_dome")
         .annotate(
             tickets_available=(
-                    F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
-                    - Count("tickets")
+                F("planetarium_dome__rows") * F("planetarium_dome__seats_in_row")
+                - Count("tickets")
             )
         )
     )
@@ -111,7 +110,7 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.prefetch_related(
         "tickets__show_session__astronomy_show",
-        "tickets__show_session__planetarium_dome"
+        "tickets__show_session__planetarium_dome",
     )
     serializer_class = ReservationSerializer
 

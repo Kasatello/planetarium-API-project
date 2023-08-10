@@ -25,9 +25,10 @@ INSTALLED_APPS = [
 
     "rest_framework",
     "debug_toolbar",
+    "rest_framework_simplejwt",
 
     "planetarium",
-    "user"
+    "user",
 ]
 
 MIDDLEWARE = [
@@ -38,8 +39,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
-    "debug_toolbar.middleware.DebugToolbarMiddleware"
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "planetarium_service.urls"
@@ -101,3 +101,9 @@ STATIC_URL = "static/"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
