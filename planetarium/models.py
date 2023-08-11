@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import date
 
 from django.db import models
 from planetarium_service import settings
@@ -66,7 +67,10 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return self.created_at
+        return (
+            f"{self.user.email}. "
+            f"Reservation created at {self.created_at}"
+        )
 
 
 class Ticket(models.Model):

@@ -25,6 +25,12 @@ class ShowThemeSerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
+class AstronomyShowImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AstronomyShow
+        fields = ["id", "image"]
+
+
 class AstronomyShowSerializer(serializers.ModelSerializer):
     class Meta:
         model = AstronomyShow
@@ -102,7 +108,7 @@ class TicketListSerializer(TicketSerializer):
 class TicketSeatsSerializer(TicketSerializer):
     class Meta:
         model = Ticket
-        fields = ("row", "seat")
+        fields = ["row", "seat"]
 
 
 class ShowSessionDetailSerializer(serializers.ModelSerializer):

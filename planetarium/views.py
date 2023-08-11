@@ -3,7 +3,8 @@ from datetime import datetime
 from django.db.models import F, Count
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from planetarium.models import (
@@ -24,6 +25,7 @@ from planetarium.serializers import (
     AstronomyShowDetailSerializer,
     ShowSessionDetailSerializer,
     ReservationListSerializer,
+    AstronomyShowImageSerializer,
 )
 
 
@@ -68,6 +70,9 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
 
         if self.action == "retrieve":
             return AstronomyShowDetailSerializer
+
+        if self.action == "upload-image":
+            return AstronomyShowImageSerializer
 
         return AstronomyShowSerializer
 
@@ -125,6 +130,11 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
             return ShowSessionDetailSerializer
 
         return ShowSessionSerializer
+
+
+class OrderPagination(PageNumberPagination):
+    page_size = 10
+    max_page_size = 100
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
