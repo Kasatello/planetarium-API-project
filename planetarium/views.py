@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from rest_framework import viewsets, status
+from planetarium.permisions import IsAdminOrIfAuthenticatedReadOnly
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from planetarium.models import (
     PlanetariumDome,
@@ -29,19 +31,33 @@ from planetarium.serializers import (
 )
 
 
-class PlanetariumDomeViewSet(viewsets.ModelViewSet):
+class PlanetariumDomeViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet
+):
     queryset = PlanetariumDome.objects.all()
     serializer_class = PlanetariumDomeSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class ShowThemeViewSet(viewsets.ModelViewSet):
+class ShowThemeViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class AstronomyShowViewSet(viewsets.ModelViewSet):
+class AstronomyShowViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = AstronomyShow.objects.prefetch_related("show_themes")
     serializer_class = AstronomyShowSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -49,9 +65,9 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
         return [int(str_id) for str_id in qs.split(",")]
 
     def get_queryset(self):
-        """Retrieve the movies with filters"""
+        """Retrieve the astronomy show with filters"""
         title = self.request.query_params.get("title")
-        show_themes = self.request.query_params.get("genres")
+        show_themes = self.request.query_params.get("show_themes")
 
         queryset = self.queryset
 
@@ -83,7 +99,7 @@ class AstronomyShowViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
-        """Endpoint for uploading image to specific movie"""
+        """Endpoint for uploading image to specific astronomy show"""
         movie = self.get_object()
         serializer = self.get_serializer(movie, data=request.data)
 
@@ -106,6 +122,7 @@ class ShowSessionViewSet(viewsets.ModelViewSet):
         )
     )
     serializer_class = ShowSessionListSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
@@ -137,12 +154,15 @@ class OrderPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class ReservationViewSet(viewsets.ModelViewSet):
+class ReservationViewSet(
+    mixins.ListModelMixin, mixins.CreateModelMixin, GenericViewSet
+):
     queryset = Reservation.objects.prefetch_related(
         "tickets__show_session__astronomy_show",
         "tickets__show_session__planetarium_dome",
     )
     serializer_class = ReservationSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":

@@ -67,10 +67,7 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"{self.user.email}. "
-            f"Reservation created at {self.created_at}"
-        )
+        return f"{self.user.email}. " f"Reservation created at {self.created_at}"
 
 
 class Ticket(models.Model):
