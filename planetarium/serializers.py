@@ -44,15 +44,15 @@ class AstronomyShowListSerializer(AstronomyShowSerializer):
 
     class Meta:
         model = AstronomyShow
-        fields = ["id", "title", "description", "show_themes"]
+        fields = ["id", "title", "description", "show_themes", "image"]
 
 
 class AstronomyShowDetailSerializer(AstronomyShowSerializer):
-    show_theme = ShowThemeSerializer(many=True, read_only=True)
+    show_themes = ShowThemeSerializer(many=True, read_only=True)
 
     class Meta:
         model = AstronomyShow
-        fields = ["id", "title", "description", "show_theme"]
+        fields = ["id", "title", "description", "show_themes", "image"]
 
 
 class ShowSessionSerializer(serializers.ModelSerializer):
@@ -72,6 +72,9 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
         source="planetarium_dome.capacity", read_only=True
     )
     tickets_available = serializers.IntegerField(read_only=True)
+    astronomy_show_image = serializers.ImageField(
+        source="astronomy_show.image", read_only=True
+    )
 
     class Meta:
         model = ShowSession
@@ -82,6 +85,7 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
             "planetarium_dome_name",
             "planetarium_dome_capacity",
             "tickets_available",
+            "astronomy_show_image",
         ]
 
 
@@ -114,7 +118,9 @@ class TicketSeatsSerializer(TicketSerializer):
 class ShowSessionDetailSerializer(serializers.ModelSerializer):
     astronomy_show = AstronomyShowListSerializer(many=False, read_only=True)
     planetarium_dome = PlanetariumDomeSerializer(many=False, read_only=True)
-    taken_places = TicketSeatsSerializer(source="tickets", many=True, read_only=True)
+    taken_places = TicketSeatsSerializer(
+        source="tickets", many=True, read_only=True
+    )
 
     class Meta:
         model = ShowSession
@@ -123,7 +129,7 @@ class ShowSessionDetailSerializer(serializers.ModelSerializer):
             "show_time",
             "astronomy_show",
             "planetarium_dome",
-            "taken_places"
+            "taken_places",
         ]
 
 

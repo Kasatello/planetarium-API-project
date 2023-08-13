@@ -38,8 +38,10 @@ def astronomy_show_image_file_path(instance, filename):
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    show_themes = models.ManyToManyField("ShowTheme")
-    image = models.ImageField(null=True, upload_to=astronomy_show_image_file_path)
+    show_themes = models.ManyToManyField("ShowTheme", blank=True)
+    image = models.ImageField(
+        null=True, upload_to=astronomy_show_image_file_path
+    )
 
     class Meta:
         ordering = ["title"]
@@ -50,7 +52,9 @@ class AstronomyShow(models.Model):
 
 class ShowSession(models.Model):
     astronomy_show = models.ForeignKey(AstronomyShow, on_delete=models.CASCADE)
-    planetarium_dome = models.ForeignKey(PlanetariumDome, on_delete=models.CASCADE)
+    planetarium_dome = models.ForeignKey(
+        PlanetariumDome, on_delete=models.CASCADE
+    )
     show_time = models.DateTimeField()
 
     class Meta:
@@ -63,11 +67,16 @@ class ShowSession(models.Model):
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reservations"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reservations"
     )
 
     def __str__(self):
-        return f"{self.user.email}. " f"Reservation created at {self.created_at}"
+        return (
+            f"{self.user.email}. "
+            f"" f"Reservation created at {self.created_at}"
+        )
 
 
 class Ticket(models.Model):
@@ -82,7 +91,11 @@ class Ticket(models.Model):
 
     @staticmethod
     def validate_ticket(row, seat, planetarium_dome, error_to_raise):
-        for ticket_attr_value, ticket_attr_name, planetarium_dome_attr_name in [
+        for (
+                ticket_attr_value,
+                ticket_attr_name,
+                planetarium_dome_attr_name
+        ) in [
             (row, "row", "rows"),
             (seat, "seat", "seats_in_row"),
         ]:
