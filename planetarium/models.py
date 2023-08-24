@@ -38,7 +38,9 @@ def astronomy_show_image_file_path(instance, filename):
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    show_themes = models.ManyToManyField("ShowTheme", blank=True)
+    show_themes = models.ManyToManyField(
+        "ShowTheme", blank=True, related_name="astronomy_shows"
+    )
     image = models.ImageField(
         null=True, upload_to=astronomy_show_image_file_path
     )
@@ -53,7 +55,7 @@ class AstronomyShow(models.Model):
 class ShowSession(models.Model):
     astronomy_show = models.ForeignKey(AstronomyShow, on_delete=models.CASCADE)
     planetarium_dome = models.ForeignKey(
-        PlanetariumDome, on_delete=models.CASCADE
+        PlanetariumDome, on_delete=models.CASCADE, related_name="show_sessions"
     )
     show_time = models.DateTimeField()
 
