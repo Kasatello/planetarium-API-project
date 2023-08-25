@@ -1,4 +1,4 @@
-# Library Api Service
+# Planetarium Api
 
 ## Table of Contents
  1. [Introduction](#introduction)
